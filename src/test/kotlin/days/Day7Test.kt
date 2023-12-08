@@ -152,6 +152,7 @@ class Day7Test {
         """.trimIndent()
 
         assertEquals(ParseDay7(expectedPart1), ParseDay7(input).sortByTypeAndScore())
+        assertEquals(ParseDay7(expectedPart2), ParseDay7(input).sortByTypeAndScore(true))
     }
 
     @Test
