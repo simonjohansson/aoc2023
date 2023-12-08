@@ -70,4 +70,32 @@ class Day8Test {
 
         assertEquals(6, ParseDay8(input2).part1())
     }
+
+    @Test
+    fun `test lcm and gcd`() {
+        assertEquals(9, gcd(18L, 27L))
+        assertEquals(281, gcd(12083L, 13207L))
+
+        assertEquals(567901, lcm(12083L, 13207L))
+
+        assertEquals(510, listOf(10L, 15L, 17L).reduce { acc, l -> lcm(acc, l) })
+    }
+
+    @Test
+    fun part2() {
+        val input = """
+            LR
+
+            11A = (11B, XXX)
+            11B = (XXX, 11Z)
+            11Z = (11B, XXX)
+            22A = (22B, XXX)
+            22B = (22C, 22C)
+            22C = (22Z, 22Z)
+            22Z = (22B, 22B)
+            XXX = (XXX, XXX)
+        """.trimIndent()
+
+        assertEquals(6, ParseDay8(input).part2())
+    }
 }
