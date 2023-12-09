@@ -70,9 +70,9 @@ class Day9Test {
 
     @Test
     fun `day9 part1`() {
-        assertEquals(18, Day9(listOf(0, 3, 6, 9, 12, 15)).part1())
-        assertEquals(28, Day9(listOf(1, 3, 6, 10, 15, 21)).part1())
-        assertEquals(68, Day9(listOf(10, 13, 16, 21, 30, 45)).part1())
+        assertEquals(18, Day9(listOf(0, 3, 6, 9, 12, 15)).nextValue())
+        assertEquals(28, Day9(listOf(1, 3, 6, 10, 15, 21)).nextValue())
+        assertEquals(68, Day9(listOf(10, 13, 16, 21, 30, 45)).nextValue())
 
         val input = """
             0 3 6 9 12 15
@@ -81,5 +81,20 @@ class Day9Test {
         """.trimIndent()
 
         assertEquals(114, ParseDay9(input).part1())
+    }
+
+    @Test
+    fun `day9 part2`() {
+        assertEquals(-3, Day9(listOf(0, 3, 6, 9, 12, 15)).previousValue())
+        assertEquals(0, Day9(listOf(1, 3, 6, 10, 15, 21)).previousValue())
+        assertEquals(5, Day9(listOf(10, 13, 16, 21, 30, 45)).previousValue())
+
+        val input = """
+            0 3 6 9 12 15
+            1 3 6 10 15 21
+            10 13 16 21 30 45
+        """.trimIndent()
+
+        assertEquals(2, ParseDay9(input).part2())
     }
 }

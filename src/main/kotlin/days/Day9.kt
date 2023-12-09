@@ -14,13 +14,18 @@ fun List<Int>.series(): List<List<Int>> =
     else
         listOf(this) + this.pairs().diffs().series()
 
-fun Day9.part1() = this.numbers.series()
+fun Day9.nextValue() = this.numbers.series()
     .reversed()
     .map { it.last() }
     .reduce { acc, i -> acc + i }
 
-fun List<Day9>.part1() = this.sumOf { it.part1() }
+fun Day9.previousValue() = this.numbers.series()
+    .reversed()
+    .map { it.first() }
+    .reduce { acc, i -> i - acc }
 
+fun List<Day9>.part1() = this.sumOf { it.nextValue() }
+fun List<Day9>.part2() = this.sumOf { it.previousValue() }
 fun ParseDay9(input: String) = input
     .split("\n")
     .map { it.split(" ").map { it.toInt() } }
