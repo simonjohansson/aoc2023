@@ -2,55 +2,55 @@ package days
 
 import kotlin.math.abs
 
-data class Day11(val grid: List<List<String>> = listOf())
 
-private fun expandRows(grid: List<List<String>>) = grid.map { row ->
-    if (row.all { it == "." }) listOf(row, row) else listOf(row)
-}.flatten()
+data class Day11(val grid: List<List<Pair<String, Pair<Long, Long>>>> = listOf())
 
-private fun expandCols(grid: List<List<String>>) =
-    grid.count().let { numRows ->
-        grid.first().count().let { numCols ->
-            (0..<numCols).mapIndexed { i, currCol ->
-                Pair(i, (0..<numRows).map { currRow -> grid[currRow][currCol] }.all { it == "." })
-            }
-        }
-    }.filter { (_, allEmpty) -> allEmpty }.map { (i, _) -> i }.let { colsToBeExpanded ->
-        grid.map { row ->
-            row.mapIndexed { index, col -> if (colsToBeExpanded.contains(index)) listOf(col, col) else listOf(col) }
-                .flatten()
+fun Day11.expand(expansion: Int = 2): List<Pair<Long, Long>> {
+    val emptyRows = (0..<this.grid.count()).filter { row ->
+        this.grid[row].all { (c, _) -> c == "." }
+    }
+
+    val emptyCols = (0..<this.grid.first().count()).filter { col ->
+        (0..<this.grid.count()).all { row ->
+            this.grid[row][col].first == "."
         }
     }
 
-fun Day11.expand() = expandRows(this.grid).let { rowsExpanded ->
-    Day11(grid = expandCols(rowsExpanded))
+    return findGalaxies().map { galaxy ->
+        val newX = galaxy.first + emptyCols.count { it < galaxy.first } * (expansion-1)
+        val newY = galaxy.second + emptyRows.count { it < galaxy.second } * (expansion-1)
+        newX to newY
+    }
 }
 
-fun Day11.findGalaxies() = this.grid.mapIndexed { rowIndex, row ->
-    row.mapIndexed { colIndex, col -> if (col == "#") listOf(Point(colIndex, rowIndex)) else listOf() }.flatten()
+private fun Day11.findGalaxies() = this.grid.map {
+    it.filter { (c, _) -> c == "#" }
+        .map { (_, p) -> p }
 }.flatten()
 
-
-fun List<Point>.pairs() = this.mapIndexed { index, current ->
+fun List<Pair<Long, Long>>.pairs() = this.mapIndexed { index, current ->
     this.drop(index + 1).map { Pair(current, it) }
 }.flatten()
 
-fun Pair<Point, Point>.distance() =
+fun Pair<Pair<Long, Long>, Pair<Long, Long>>.distance() =
     this.let { (start, end) ->
         val (x1, y1) = start
         val (x2, y2) = end
         abs(y1 - y2) + abs(x1 - x2)
     }
 
-fun Day11.part1() = this.expand().findGalaxies().pairs()
+fun Day11.go(expansion: Int) = this.expand(expansion).pairs()
     .map {
         it.distance()
-    }.let {
-        it.sum()
-    }
+    }.sum()
 
-fun ParseDay11(input: String) = Day11(grid = input.split("\n").map { row ->
-    row.toCharArray().map { it.toString() }
-})
+fun ParseDay11(input: String) = input.split("\n")
+    .mapIndexed { iRow, row ->
+        row.split("").filter { it.isNotEmpty() }.mapIndexed { iCol, col ->
+            col to Pair(iCol.toLong(), iRow.toLong())
+        }
+    }.let {
+        Day11(it)
+    }
 
 
