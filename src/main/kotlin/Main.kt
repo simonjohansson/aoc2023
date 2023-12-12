@@ -1,8 +1,7 @@
 import days.*
 
 fun main(args: Array<String>) {
-    val input = {}.javaClass.getResource("day11.txt").readText()
-    val parsed = ParseDay11(input)
-    println(parsed.go(2))
-    println(parsed.go(1000000))
+    val input = {}.javaClass.getResource("day12.txt").readText()
+    val parsed = ParseDay12(input)
+    println(parsed.part1())
 }
