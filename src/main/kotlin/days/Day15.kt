@@ -38,10 +38,7 @@ fun Day15.toOps() = this.strings.map { chars ->
 fun Day15.part1() = this.strings.map { it.HASH() }.sum()
 fun Day15.part2() = this.toOps().let { ops ->
 
-    val state = mutableListOf<List<Lens>>()
-    (0..<256).forEach {
-        state.add(it, emptyList())
-    }
+    val state = Array<List<Lens>>(256){ listOf() }
 
     ops.forEach { op ->
         when (op) {
