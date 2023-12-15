@@ -16,4 +16,50 @@ fun String.HASH(): Int {
     return curr
 }
 
+data class Lens(val label: String, val focalLength: Int)
+sealed interface Op {
+    fun box(): Int
+}
+
+data class Remove(val label: String) : Op {
+    override fun box() = label.HASH()
+}
+
+data class Add(val label: String, val focalLength: Int) : Op {
+    override fun box() = label.HASH()
+    fun toLens() = Lens(label, focalLength)
+}
+
+fun Day15.toOps() = this.strings.map { chars ->
+    if (chars.contains('-')) Remove(chars.takeWhile { it != '-' })
+    else Add(chars.split("=").first(), chars.split("=").last().toInt())
+}
+
 fun Day15.part1() = this.strings.map { it.HASH() }.sum()
+fun Day15.part2() = this.toOps().let { ops ->
+
+    val state = mutableListOf<List<Lens>>()
+    (0..<256).forEach {
+        state.add(it, emptyList())
+    }
+
+    ops.forEach { op ->
+        when (op) {
+            is Add -> state[op.box()] = state[op.box()].let { b ->
+                when (b.isEmpty()) {
+                    true -> listOf(op.toLens())
+                    false -> when (b.any { it.label == op.label }) {
+                        true -> b.map { if (it.label == op.label) op.toLens() else it }
+                        false -> b + listOf(op.toLens())
+                    }
+                }
+            }
+
+            is Remove -> state[op.box()] = state[op.box()].filter { it.label != op.label }
+        }
+    }
+
+    state.mapIndexed { boxIndex, lenses ->
+        lenses.mapIndexed { lensIndex, lens -> (1 + boxIndex) * (1 + lensIndex) * lens.focalLength }.sum()
+    }.sum()
+}
