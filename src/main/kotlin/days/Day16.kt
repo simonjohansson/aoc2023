@@ -64,16 +64,17 @@ fun next(grid: List<String>, curr: Pair<Direction, Point>): List<Pair<Direction,
     }.filter { !outsideOfGrid(grid, it.second) }
 }
 
-fun Day16.beam(): MutableSet<Pair<Direction, Point>> = run {
-    val start = EAST to Point(0, 0)
-
+private fun beam(
+    grid: List<String>,
+    start: Pair<Direction, Point> = EAST to Point(0, 0)
+): MutableSet<Pair<Direction, Point>> = run {
     val seen = mutableSetOf<Pair<Direction, Point>>(start)
     val queue = ArrayDeque<Pair<Direction, Point>>()
 
     queue.add(start)
     while (!queue.isEmpty()) {
         val nextPos = queue.removeFirst()
-        for (n in next(this.grid, nextPos)) {
+        for (n in next(grid, nextPos)) {
             if (n in seen) {
                 continue
             }
@@ -83,5 +84,22 @@ fun Day16.beam(): MutableSet<Pair<Direction, Point>> = run {
     }
     return seen
 }
+fun Day16.part1() = beam(this.grid).map { it.second }.toSet().count()
 
-fun Day16.part1() = this.beam().map { it.second }.toSet().count()
+fun Day16.part2(): Int {
+    val south = (0..<this.grid.first().count()).map {
+        SOUTH to Point(it, 0)
+    }
+    val east = (0..<this.grid.count()).map {
+        EAST to Point(0, it)
+    }
+    val west = (0..<this.grid.count()).map {
+        WEST to Point(this.grid.first().count() - 1, it)
+    }
+    val north = (0..<this.grid.first().count()).map {
+        NORTH to Point(it, this.grid.count() - 1)
+    }
+
+    val results = (south + east + west + north).map { beam(this.grid, it) }
+    return results.maxOf { it.map { it.second }.toSet().count() }
+}

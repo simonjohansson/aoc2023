@@ -217,7 +217,7 @@ class Day16Test {
     }
 
     @Test
-    fun part1() {
+    fun parts() {
         val input = """
             .|...\....
             |.-.\.....
@@ -232,5 +232,6 @@ class Day16Test {
         """.trimIndent()
 
         assertEquals(46, Day16.from(input).part1())
+        assertEquals(51, Day16.from(input).part2())
     }
 }
